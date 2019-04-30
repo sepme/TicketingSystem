@@ -1,0 +1,11 @@
+{% extends 'ticket/base_profile.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+    <form method="post" style="direction: rtl">
+    {% csrf_token %}
+    {{ form.as_p }}
+        <button type="submit" class="button btn-primary btn-lg" style="width: 40%; margin-left: 30%; margin-right: 30%; font-family: 'B Yekan'">ثبت تغییرات</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" type="text/css" href='{% static "/ticket/css/base_profile.css" %}'>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {% block script %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <div class="row profile">
+            <div class="col-md-9">
+                <div class="profile-content">
+                   {% block content %}{% endblock %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <!-- SIDEBAR USERPIC -->
+                    <div class="profile-userpic">
+                        <img style="display: block; margin-left: auto; margin-right: auto; width: 50%" src="{% static 'ticket/images/profile-picture.jpg' %}" class="img-responsive" alt="">
+                    </div>
+                    <!-- END SIDEBAR USERPIC -->
+                    <!-- SIDEBAR USER TITLE -->
+                    <div class="profile-usertitle">
+                        <div class="profile-usertitle-name">
+                            {{ user.username }}
+                        </div>
+                        <div class="profile-usertitle-job">
+                            Online
+                        </div>
+                    </div>
+                    <!-- END SIDEBAR USER TITLE -->
+                    <!-- SIDEBAR BUTTONS -->
+                    <div class="profile-userbuttons">
+                        <button type="button" class="btn btn-success btn-sm">Follow</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="location.href = '{% url 'logout' %}';">Logout</button>
+                    </div>
+                    <!-- END SIDEBAR BUTTONS -->
+                    <!-- SIDEBAR MENU -->
+                    <div class="profile-usermenu" style="font-family: 'B Yekan'">
+                        <ul class="nav flex-column">
+                            <li>
+                                <a href="{% url 'profile' %}">
+                                <i class="glyphicon glyphicon-home"></i>
+                                تیکت های من </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'user-setting' %}">
+                                <i class="glyphicon glyphicon-user"></i>
+                                تنظیمات کاربری </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'add-ticket' %}">
+                                <i class="glyphicon glyphicon-ok"></i>
+                                ایجاد تیکت جدید </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- END MENU -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

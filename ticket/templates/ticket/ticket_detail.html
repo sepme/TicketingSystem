@@ -1,0 +1,90 @@
+{% extends 'ticket/base_profile.html' %}
+
+{% load staticfiles %}
+
+{% block script %}
+    <style>
+    .user-message {
+        padding: 10px;
+        background-color: #80bdff;
+        direction: rtl;
+        border-radius: .8em .8em 0em .8em;
+        margin-bottom: 20px;
+        width: 60%;
+        height: max-content;
+        margin-left: 40%;
+        margin-right: 0%;
+    }
+    .admin-message {
+        padding: 10px;
+        background-color: #CCCCCC;
+        direction: rtl;
+        margin-bottom: 20px;
+        border-radius: .8em .8em .8em 0em;
+        width: 60%;
+        margin-left: 0%;
+        margin-right: 40%;
+    }
+    .date{
+        font-family: sans-serif;
+        color: revert;
+        margin-left: 0%;
+        margin-right: 40%;
+        direction: ltr;
+        margin-bottom: 0px;
+    }
+    .attachment{
+        padding: 10px;
+        border: #5a7391 dotted;
+        border-radius: .7em;
+        margin-bottom: 5px;
+        width: fit-content;
+    }
+    .attachment-image{
+        max-height: 20px;
+        max-width: 20px;
+        margin-left: 10px
+    }
+    #ticket-title{
+        direction: rtl;
+        padding: 10px;
+        text-align: center;
+    }
+    </style>
+{% endblock %}
+
+{% block title %}Ticket {{ ticket.id }}{% endblock %}
+
+{% block content %}
+    <div style="font-family: 'B Yekan'">
+        {% if is_allowed %}
+            <div class="jumbotron" id="ticket-title">موضوع: {{ ticket.title }}</div>
+            {% for message in messages %}
+                {% if message.is_sent_by_costumer %}
+                    <div class="user-message">
+                {% else %}
+                    <div class="admin-message">
+                {% endif %}
+                <p>{{ message.text }}</p>
+                {% if message.attachment %}
+                    <div class="attachment">
+                        <div style="display: inline-block"><img class="attachment-image" src="{% static 'ticket/images/attachment.png' %}"></div>
+                        <div style="display: inline-block"><a href="{{ message.attachment.url }}" style="color: black">{{ message.attachment }}</a></div>
+                    </div>
+                {% endif %}
+                <p class="date">{{ message.date_sent }}</p>
+                </div>
+            {% endfor %}
+            <div>
+                <form method="post" style="direction: rtl" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" value="{{ ticket.id }}" name="ticket_id">
+                    <button type="submit" class="button btn-primary btn-lg" style="width: 40%; margin-left: 30%; margin-right: 30%">ارسال پیام</button>
+                </form>
+            </div>
+        {% else %}
+            <h1>این تیکت برای شما موجود نیست!</h1>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'ticket/base_profile.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block script %}
+    <script>
+    (function(){
+        'use strict';
+        var $ = jQuery;
+        $.fn.extend({
+            filterTable: function(){
+                return this.each(function(){
+                    $(this).on('keyup', function(e){
+                        $('.filterTable_no_results').remove();
+                        var $this = $(this),
+                            search = $this.val().toLowerCase(),
+                            target = $this.attr('data-filters'),
+                            $target = $(target),
+                            $rows = $target.find('tbody tr');
+
+                        if(search == '') {
+                            $rows.show();
+                        } else {
+                            $rows.each(function(){
+                                var $this = $(this);
+                                $this.text().toLowerCase().indexOf(search) === -1 ? $this.hide() : $this.show();
+                            })
+                            if($target.find('tbody tr:visible').size() === 0) {
+                                var col_count = $target.find('tr').first().find('td').size();
+                                var no_results = $('<tr class="filterTable_no_results"><td colspan="'+col_count+'">No results found</td></tr>')
+                                $target.find('tbody').append(no_results);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+        $('[data-action="filter"]').filterTable();
+    })(jQuery);
+
+    $(function(){
+        // attach table filter plugin to inputs
+        $('[data-action="filter"]').filterTable();
+
+        $('.container').on('click', '.panel-heading span.filter', function(e){
+            var $this = $(this),
+                $panel = $this.parents('.panel');
+
+            $panel.find('.panel-body').slideToggle();
+            if($this.css('display') != 'none') {
+                $panel.find('.panel-body input').focus();
+            }
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+    </script>
+    <style>
+		.clickable{
+		    cursor: pointer;
+		}
+
+		.panel-heading div {
+			margin-top: -18px;
+			font-size: 15px;
+		}
+		.panel-heading div span{
+			margin-left:5px;
+		}
+		.panel-body{
+			display: none;
+		}
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% if ticket_list %}
+        <div class="panel panel-primary">
+					<div class="panel-heading" style="font-family: 'B Yekan'">
+						<h3 class="panel-title">تیکت های من</h3>
+						<div class="pull-right">
+							<span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
+								<i class="glyphicon glyphicon-filter"></i>
+							</span>
+						</div>
+					</div>
+					<div class="panel-body">
+						<input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="جستجوی تیکت" />
+					</div>
+					<table class="table table-hover" id="dev-table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Title</th>
+								<th>Date Submitted</th>
+								<th>Answered</th>
+							</tr>
+						</thead>
+						<tbody>
+                        {% for ticket in ticket_list %}
+							<tr>
+								<td>{{ ticket.id }}</td>
+								<td><a href="{{ ticket.get_url }}">{{ ticket.title }}</a></td>
+								<td>{{ ticket.date_submitted }}</td>
+								<td>
+                                    {% if ticket.is_answered %}
+                                        <i class="glyphicon glyphicon-ok-circle"></i>
+                                    {% else %}
+                                        <i class="glyphicon glyphicon-remove-circle"></i>
+                                    {% endif %}
+                                </td>
+							</tr>
+                        {% endfor %}
+						</tbody>
+					</table>
+				</div>
+    {% else %}
+        <h1 class="jumbotron" style="font-family: 'B Yekan'; text-align: center; direction: rtl">متاسفانه هنوز تیکتی ثبت نکرده اید!</h1>
+    {% endif %}
+{% endblock %}

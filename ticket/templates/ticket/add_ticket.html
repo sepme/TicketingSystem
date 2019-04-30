@@ -1,0 +1,22 @@
+{% extends 'ticket/base_profile.html' %}
+
+{% block title %}Add Ticket{% endblock %}
+
+{% block content %}
+    <div class="col-md" style="direction: rtl; font-family: 'B Yekan';">
+        {% if success_message %}
+            <div class="alert alert-success">تیکت شما با شماره {{ success_message }}  به ثبت رسید.</div>
+        {% elif fail_message %}
+            <div class="alert alert-danger">
+                <p>متاسفانه تیکت شما ثبت نشد!</p>
+                <p>{{ form.errors }}</p>
+            </div>
+        {% endif %}
+        <h1 style="width: 70%; margin-left: 15%; margin-right: 15%">آیا می خواهید تیکت جدید ثبت کنید؟</h1>
+        <form method="post" style="margin-top: 50px" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 40%; margin-left: 30%; margin-right: 30%">ثبت تیکت جدید</button>
+        </form>
+    </div>
+{% endblock %}
