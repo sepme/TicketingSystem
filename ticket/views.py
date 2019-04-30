@@ -1,8 +1,10 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from django.http.response import HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, View
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 
 from .forms import CreateTicketForm, CreateMessageForm, UserSettingForm
@@ -73,6 +75,25 @@ class UserSettingsView(TemplateView):
         return render(request, 'ticket/user_setting.html', context)
 
 
+class UserCreationView(TemplateView):
+    template_name = 'ticket/sign_up.html'
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('profile')
+
+        else:
+            print(form.errors)
+            form = UserCreationForm()
+            return redirect('sign-up')
+
+
 @method_decorator(login_required(), name='dispatch')
 class TicketDetailView(View):
 
@@ -110,3 +131,8 @@ class TicketDetailView(View):
                 'form': CreateMessageForm
             }
             return render(request, 'ticket/ticket_detail.html', context=context)
+
+
+@login_required()
+def Index(request):
+    return redirect('login')
